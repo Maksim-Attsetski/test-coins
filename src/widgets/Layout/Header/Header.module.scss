@@ -1,0 +1,19 @@
+@import "shared/all.scss";
+
+
+.header {
+  background: $main;
+  &Body {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.coins {
+  display: flex;
+  gap: 1rem;
+  text-align: center;
+  font-size: 14px;
+}

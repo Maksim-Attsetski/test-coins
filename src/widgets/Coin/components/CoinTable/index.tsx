@@ -23,7 +23,7 @@ const CoinTable: FC<IProps> = ({ limit, offset }) => {
 
   const coinsRows: ICeil[] = useMemo(() => {
     return coins.map(({ id, ...coin }) => {
-      const isExist = userCoins.includes(id);
+      const isExist = userCoins?.includes(id);
       return {
         id,
         data: [

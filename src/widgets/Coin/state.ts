@@ -1,21 +1,22 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Storage } from 'shared';
-import { ICoin } from './types';
+import { LSKeys, Storage } from 'shared';
+import { defaultLastProfile, ICoin, ILastProfile } from './types';
 
 interface IState {
   coins: ICoin[];
   userCoins: string[];
+  lastProfile: ILastProfile;
 }
-const LSKey = 'user-coins';
 
 const initialState: IState = {
   coins: [],
-  userCoins: Storage.getItem(LSKey),
+  userCoins: Storage.getItem(LSKeys.userCoins),
+  lastProfile: Storage.getItem(LSKeys.profile) ?? defaultLastProfile,
 };
 
 const setCoins = (state: IState, coins: string[]) => {
   state.userCoins = coins;
-  Storage.setItem(LSKey, coins);
+  Storage.setItem(LSKeys.userCoins, coins);
 };
 
 const coinSlice = createSlice({
@@ -25,16 +26,27 @@ const coinSlice = createSlice({
     setCoinsAC: (state: IState, action: PayloadAction<ICoin[]>) => {
       state.coins = action.payload;
     },
+    setProfileAC: (state: IState, action: PayloadAction<ILastProfile>) => {
+      state.lastProfile = action.payload;
+      Storage.setItem(LSKeys.profile, action.payload);
+    },
     setUserCoinsAC: (state: IState, action: PayloadAction<string[]>) => {
       setCoins(state, action.payload);
     },
     addUserCoinsAC: (state: IState, action: PayloadAction<string>) => {
-      setCoins(state, [...state.userCoins, action.payload]);
+      setCoins(
+        state,
+        state.userCoins
+          ? [...state.userCoins, action.payload]
+          : [action.payload]
+      );
     },
     deleteUserCoinsAC: (state: IState, action: PayloadAction<string>) => {
       setCoins(
         state,
-        state.userCoins.filter((el) => el !== action.payload)
+        state.userCoins
+          ? state.userCoins.filter((el) => el !== action.payload)
+          : []
       );
     },
   },

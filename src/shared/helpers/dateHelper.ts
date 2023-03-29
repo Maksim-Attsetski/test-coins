@@ -1,48 +1,24 @@
 type TGetTimeString = (date: Date | number, language?: string) => string;
 
-const oneHour = 3.6e6;
-const oneMonth = 2.628e9;
-const badHours = Date.now() - new Date().getHours() * oneHour;
-const getDate = (add: number) => new Date(badHours + add).getTime();
+const oneDay = 8.64e7;
 
 class DateHelper {
   dates: {
     ago: number;
     now: number;
-    someLater: number; // one hour later
-    today: number;
-    tomorrow: number;
-    week: number;
-    month: number;
+    before1d: number;
+    after1d: number;
+    after: number;
   };
 
   constructor() {
     this.dates = {
       ago: -Infinity,
+      before1d: Date.now() - oneDay,
       now: Date.now(),
-      someLater: Date.now() + oneHour, // one hour later
-      today: getDate(0),
-      tomorrow: getDate(8.64e7),
-      week: getDate(6.048e8),
-      month: getDate(oneMonth),
+      after1d: Date.now() + oneDay,
+      after: Date.now() + 60000,
     };
-  }
-
-  getMinutes(min: number): string {
-    const hours = Math.floor(min / 60);
-    const minutes = Math.round(min % 60) + ' мин.';
-
-    return hours === 0 ? minutes : `${hours} ч. ${minutes}`;
-  }
-
-  getBeautifulDate(now: number, divider: string = '/'): string {
-    const date = new Date(now);
-
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-
-    return `${year}${divider}${month}${divider}${day}`;
   }
 
   getTimeString: TGetTimeString = (

@@ -5,5 +5,8 @@ header {
 }
 
 main {
-  min-height: $contentHeight;  
+  $top: 20px;
+
+  margin-top: $top;
+  min-height: calc($contentHeight - $top);  
 }

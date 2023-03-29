@@ -1,13 +1,14 @@
 import axios, { CreateAxiosDefaults } from 'axios';
+import { coinCapApi, coinCapKey } from 'shared/config';
 
 export const getApi = (baseURL: string, headers?: any) =>
   axios.create({ withCredentials: true, baseURL, headers: headers ?? {} });
 
 export const getCoinApi = () =>
   axios.create({
-    baseURL: 'https://api.coincap.io/v2/',
+    baseURL: coinCapApi,
     headers: {
-      Authorization: 'Bearer c9d23913-8965-4fc2-8ec9-e7e5f54757fc',
+      Authorization: 'Bearer ' + coinCapKey,
       'Content-Type': 'application/json; charset=utf-8',
     },
   });
