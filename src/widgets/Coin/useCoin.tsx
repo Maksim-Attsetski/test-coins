@@ -13,6 +13,12 @@ const useCoin = (query?: IQuery) => {
     action.setCoinsAC(data?.data);
   }, []);
 
+  const onGetOneCoin = useCallback(async (id: string) => {
+    const data = await CoinService.getOneCoin(id);
+
+    return data?.data;
+  }, []);
+
   const onAddUserCoin = useCallback((id: string) => {
     action.addUserCoinsAC(id);
   }, []);
@@ -25,6 +31,13 @@ const useCoin = (query?: IQuery) => {
     query && onGetCoins(query);
   }, [query?.limit, query?.offset]);
 
-  return { coins, userCoins, onGetCoins, onAddUserCoin, onDeleteUserCoin };
+  return {
+    coins,
+    userCoins,
+    onGetOneCoin,
+    onGetCoins,
+    onAddUserCoin,
+    onDeleteUserCoin,
+  };
 };
 export default useCoin;

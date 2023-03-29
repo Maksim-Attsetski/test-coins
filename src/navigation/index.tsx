@@ -18,6 +18,7 @@ const Navigation: FC = () => {
         <Route path='/' element={<Layout />}>
           <Route element={<screens.Home />} path={routeNames.Home} />
           <Route element={<screens.Notfound />} path={routeNames.Notfound} />
+          <Route element={<screens.Coin />} path={routeNames.Coin + ':id'} />
         </Route>
       </Routes>
     </>

@@ -20,6 +20,18 @@ class CoinService {
       throw error;
     }
   }
+  async getOneCoin(id: string) {
+    try {
+      const res = await this.api.get('assets/' + id);
+
+      console.log('Successfully get coin', res);
+
+      return res.data;
+    } catch (error) {
+      console.log('Fail to get coin', error);
+      throw error;
+    }
+  }
 }
 
 export default new CoinService();
