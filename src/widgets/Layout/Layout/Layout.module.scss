@@ -1,0 +1,9 @@
+@import 'shared/all.scss';
+
+header {
+  height: $headerHeight;
+}
+
+main {
+  min-height: $contentHeight;  
+}
