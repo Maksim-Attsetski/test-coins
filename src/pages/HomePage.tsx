@@ -7,25 +7,31 @@ import { useCoin } from 'widgets/Coin';
 
 const HomePage: FC = () => {
   const navigate = useNavigate();
-  const { coins } = useCoin({ limit: 20, offset: 0 });
+  const { coins, userCoins, onAddUserCoin, onDeleteUserCoin } = useCoin({
+    limit: 20,
+    offset: 0,
+  });
 
   const coinsRows: ICeil[] = useMemo(() => {
-    return coins.map((coin) => ({
-      id: coin.id,
-      data: [
-        { text: coin.name },
-        { text: StringHelper.getCurrency(coin.priceUsd) },
-        { text: coin.rank },
-        { text: StringHelper.getCurrency(coin.marketCapUsd) },
-        {
-          text: 'Add',
-          onClick: () => {
-            console.log('cfff');
+    return coins.map(({ id, ...coin }) => {
+      const isExist = userCoins.includes(id);
+      return {
+        id,
+        data: [
+          { text: coin.name },
+          { text: StringHelper.getCurrency(coin.priceUsd) },
+          { text: coin.rank },
+          { text: StringHelper.getCurrency(coin.marketCapUsd) },
+          {
+            text: isExist ? 'Remove' : 'Add',
+            onClick: () => {
+              isExist ? onDeleteUserCoin(id) : onAddUserCoin(id);
+            },
           },
-        },
-      ],
-    }));
-  }, [coins, StringHelper]);
+        ],
+      };
+    });
+  }, [coins, userCoins]);
 
   const coinsHead: string[] = useMemo(
     () => ['Name', 'Price', 'Rank', 'Market cap', 'Action'],

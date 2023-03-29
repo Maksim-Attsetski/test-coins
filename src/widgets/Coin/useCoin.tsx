@@ -4,7 +4,7 @@ import { IQuery } from 'shared';
 import { CoinService } from '.';
 
 const useCoin = (query?: IQuery) => {
-  const { coins } = useTypedSelector((state) => state.coin);
+  const { coins, userCoins } = useTypedSelector((state) => state.coin);
   const { action } = useActions();
 
   const onGetCoins = useCallback(async (query?: IQuery) => {
@@ -13,10 +13,18 @@ const useCoin = (query?: IQuery) => {
     action.setCoinsAC(data?.data);
   }, []);
 
+  const onAddUserCoin = useCallback((id: string) => {
+    action.addUserCoinsAC(id);
+  }, []);
+
+  const onDeleteUserCoin = useCallback((id: string) => {
+    action.deleteUserCoinsAC(id);
+  }, []);
+
   useEffect(() => {
     query && onGetCoins(query);
   }, []);
 
-  return { coins, onGetCoins };
+  return { coins, userCoins, onGetCoins, onAddUserCoin, onDeleteUserCoin };
 };
 export default useCoin;
