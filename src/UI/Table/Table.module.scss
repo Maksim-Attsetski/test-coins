@@ -1,19 +1,26 @@
+@import 'shared/all.scss';
+$border: 0.5px solid #000;
 
 .table {
-  $border: 0.5px solid #000;
   width: max-content;
-  display: flex;
+  border-spacing: 0;
   border: $border;
-
+  
   &__head {}
-  &__body {}
-  &__ceil {
-  }
+  &Container {}
   
   &__head,
   &__ceil {
     border: $border;
     padding: 7px 13px;
     cursor: pointer;
+  }
+
+  &__ceil {
+    transition: all 0.3s linear;
+    &:hover {
+      background: $main;
+      color: $white;
+    }
   }
 }

@@ -1,9 +1,11 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
 import { appReducer } from 'widgets/App';
+import { coinReducer } from 'widgets/Coin';
 
 const rootReducer = combineReducers({
   app: appReducer,
+  coin: coinReducer,
 });
 
 export const store = configureStore({

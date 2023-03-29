@@ -1,7 +1,5 @@
 export enum routeNames {
-  // all
   Home = '/',
   Notfound = '*',
-  // public
-  // auth
+  Coin = '/coins/',
 }
