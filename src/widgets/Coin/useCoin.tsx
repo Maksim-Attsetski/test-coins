@@ -23,7 +23,7 @@ const useCoin = (query?: IQuery) => {
 
   useEffect(() => {
     query && onGetCoins(query);
-  }, []);
+  }, [query?.limit, query?.offset]);
 
   return { coins, userCoins, onGetCoins, onAddUserCoin, onDeleteUserCoin };
 };
