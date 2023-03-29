@@ -1,5 +1,6 @@
 import Loader from './Loader';
 import Gap from './Gap';
 import List from './List';
+import Table from './Table';
 
-export { Loader, Gap, List };
+export { Table, Loader, Gap, List };

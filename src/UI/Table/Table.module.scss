@@ -1,0 +1,19 @@
+
+.table {
+  $border: 0.5px solid #000;
+  width: max-content;
+  display: flex;
+  border: $border;
+
+  &__head {}
+  &__body {}
+  &__ceil {
+  }
+  
+  &__head,
+  &__ceil {
+    border: $border;
+    padding: 7px 13px;
+    cursor: pointer;
+  }
+}
