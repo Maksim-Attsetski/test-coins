@@ -3,9 +3,13 @@ import s from './Table.module.scss';
 
 export type TCeil = string | number;
 
+export interface ICeilData {
+  onClick?: (val: ICeilData) => void;
+  text: TCeil;
+}
 export interface ICeil {
   id: string;
-  data: TCeil[];
+  data: ICeilData[];
 }
 
 interface IProps {
@@ -19,6 +23,11 @@ const Table: FC<IProps> = ({
   rows = [],
   onCeilClick = () => {},
 }) => {
+  const onCurCeilClick = (event: any, data: ICeilData, row: ICeil) => {
+    event.stopPropagation();
+    data.onClick ? data.onClick(data) : onCeilClick(row);
+  };
+
   return (
     <table className={s.table}>
       <tr className={s.table__head}>
@@ -35,8 +44,12 @@ const Table: FC<IProps> = ({
           className={s.tableContainer}
         >
           {row.data.map((el, inx) => (
-            <td className={s.table__ceil} key={inx}>
-              {el}
+            <td
+              onClick={(e) => onCurCeilClick(e, el, row)}
+              className={s.table__ceil}
+              key={inx}
+            >
+              {el.text}
             </td>
           ))}
         </tr>

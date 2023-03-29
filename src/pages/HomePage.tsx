@@ -11,12 +11,23 @@ const HomePage: FC = () => {
   const coinsRows: ICeil[] = useMemo(() => {
     return coins.map((coin) => ({
       id: coin.id,
-      data: [coin.name, coin.priceUsd, coin.rank, coin.marketCapUsd],
+      data: [
+        { text: coin.name },
+        { text: coin.priceUsd },
+        { text: coin.rank },
+        { text: coin.marketCapUsd },
+        {
+          text: 'Add',
+          onClick: () => {
+            console.log('cfff');
+          },
+        },
+      ],
     }));
   }, [coins]);
 
   const coinsHead: string[] = useMemo(
-    () => ['Name', 'Price', 'Rank', 'Market cap'],
+    () => ['Name', 'Price', 'Rank', 'Market cap', 'Action'],
     [coins]
   );
 
