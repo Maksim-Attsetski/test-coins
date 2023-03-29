@@ -1,5 +1,6 @@
 import { usePagination } from 'hooks';
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
+import { Button, Gap } from 'UI';
 import { CoinTable } from 'widgets/Coin';
 
 const HomePage: FC = () => {
@@ -8,8 +9,9 @@ const HomePage: FC = () => {
   return (
     <div className='container'>
       <CoinTable limit={limit} offset={offset} />
-      <button onClick={onMoreContent}>More</button>
+      <Gap y={10} />
+      <Button onClick={onMoreContent} text='More' />
     </div>
   );
 };
-export default HomePage;
+export default memo(HomePage);
