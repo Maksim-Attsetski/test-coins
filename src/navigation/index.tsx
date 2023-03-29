@@ -14,6 +14,7 @@ const Navigation: FC = () => {
 
   return (
     <>
+      <div className='main-circle' />
       <Routes>
         <Route path='/' element={<Layout />}>
           <Route element={<screens.Home />} path={routeNames.Home} />
