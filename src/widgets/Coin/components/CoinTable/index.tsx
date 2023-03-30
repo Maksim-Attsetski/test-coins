@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { StringHelper } from 'shared';
 import { ICeil, Table } from 'UI';
-import { useCoin, ICoin } from 'widgets/Coin';
+import { useCoin, ICoin, IUserCoin } from 'widgets/Coin';
 
 import AddCoinModal from '../AddCoinModal';
 import SellCoinModal from '../SellCoinModal';
@@ -28,7 +28,10 @@ const CoinTable: FC<IProps> = ({ limit, offset }) => {
 
   const coinsRows: ICeil[] = useMemo(() => {
     return coins.map(({ id, ...coin }) => {
-      const isExist = userCoins?.find((el) => el.id === id);
+      const existCoin: IUserCoin | undefined = userCoins?.find(
+        (el) => el.id === id
+      );
+
       return {
         id,
         data: [
@@ -37,19 +40,20 @@ const CoinTable: FC<IProps> = ({ limit, offset }) => {
           { text: coin.rank },
           { text: StringHelper.getCurrency(coin.marketCapUsd) },
           {
-            text: isExist ? 'Remove' : 'Add',
+            text: existCoin ? 'Sell' : 'Add',
             onClick: () => {
               setSelectedCoin({ id, ...coin });
-              isExist ? setIsDeleteModalOpen(true) : setIsAddModalOpen(true);
+              existCoin ? setIsDeleteModalOpen(true) : setIsAddModalOpen(true);
             },
           },
+          { text: existCoin ? existCoin.count : 0 },
         ],
       };
     });
   }, [coins, userCoins]);
 
   const coinsHead: string[] = useMemo(
-    () => ['Name', 'Price', 'Rank', 'Market cap', 'Action'],
+    () => ['Name', 'Price', 'Rank', 'Market cap', 'Action', 'You have'],
     [coins]
   );
 

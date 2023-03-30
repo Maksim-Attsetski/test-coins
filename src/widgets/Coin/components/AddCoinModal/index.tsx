@@ -46,7 +46,7 @@ const AddCoinModal: FC<IProps> = ({ selectedCoin, onClose, ...props }) => {
         error={error}
         setError={setError}
         title='How much coins do you wanna buy?'
-        text={`Your balance: ${coinsBag.balance}`}
+        text={`Your balance: ${coinsBag.balance}, price for 1 coin: ${selectedCoin?.priceUsd}`}
         onConfirm={onBuyCoins}
         {...props}
       />
