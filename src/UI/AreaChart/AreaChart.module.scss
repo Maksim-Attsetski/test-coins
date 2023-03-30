@@ -1,4 +1,4 @@
 
 .container {
-  max-width: 50vw;
+  max-width: clamp(300px, 90vw, 800px);
 }

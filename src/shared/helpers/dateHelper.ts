@@ -1,3 +1,5 @@
+import { TIntervalsText } from 'shared/types';
+
 type TGetTimeString = (date: Date | number, language?: string) => string;
 
 const oneDay = 8.64e7;
@@ -26,14 +28,33 @@ class DateHelper {
     };
   }
 
-  getBeautifulDate(oldDate: number): string {
+  getInterval(interval: TIntervalsText): number {
+    switch (interval) {
+      case 'month':
+        return this.dates.before1month;
+      case 'day':
+        return this.dates.before1d;
+      default:
+        return this.dates.before1d;
+    }
+  }
+
+  getBeautifulDate(oldDate: number, detailed?: boolean): string {
     const date = new Date(oldDate);
 
     const day = date.getDate();
+
+    if (detailed) {
+      const hour = date.getHours();
+      const minute = date.getMinutes();
+
+      return `${minute}.${hour}.${day}`;
+    }
+
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
 
-    return `${day} ${month} ${year}`;
+    return `${day}.${month}.${year}`;
   }
 
   getTimeString: TGetTimeString = (

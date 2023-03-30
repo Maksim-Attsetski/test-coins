@@ -33,14 +33,12 @@ class CoinService {
       throw error;
     }
   }
-  async getOneCoinHistory(id: string): Promise<ICoinHistory[]> {
+  async getOneCoinHistory(
+    id: string,
+    params?: IQuery
+  ): Promise<ICoinHistory[]> {
     try {
-      const res = await this.api.get(
-        // `assets/${id}/history?interval=m30`
-        `assets/${id}/history?interval=d1&start=${
-          dateHelper.dates.before1month
-        }&end=${Date.now()}`
-      );
+      const res = await this.api.get(`assets/${id}/history`, { params });
 
       console.log('Successfully get coin history', res);
 

@@ -1,6 +1,6 @@
 import { useActions, useTypedSelector } from 'hooks';
 import { useCallback, useEffect } from 'react';
-import { dateHelper, IQuery } from 'shared';
+import { dateHelper, IQuery, TIntervalsText } from 'shared';
 import {
   CoinService,
   defaultLastProfile,
@@ -46,8 +46,14 @@ const useCoin = (query?: IQuery) => {
     action.deleteUserCoinsAC(id);
   }, []);
 
-  const onGetHistory = useCallback(async (id: string) => {
-    const response = await CoinService.getOneCoinHistory(id);
+  const onGetHistory = useCallback(async (id: string, type: TIntervalsText) => {
+    const query: IQuery = {
+      start: dateHelper.getInterval(type),
+      end: Date.now(),
+      interval: type === 'month' ? 'd1' : 'h1',
+    };
+
+    const response = await CoinService.getOneCoinHistory(id, query);
 
     return response;
   }, []);
