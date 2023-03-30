@@ -4,7 +4,8 @@ import List from './List';
 import Table, { ICeil } from './Table';
 import Button from './Button';
 import Pagination from './Pagination';
+import Modal from './Modal';
 
 export type { ICeil };
 
-export { Pagination, Table, Loader, Gap, List, Button };
+export { Modal, Pagination, Table, Loader, Gap, List, Button };

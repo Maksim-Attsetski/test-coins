@@ -1,0 +1,35 @@
+@import 'shared/all.scss';
+
+.container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999;
+  transform: scale(0);
+  pointer-events: none;
+  transition: all linear 0.35s;
+  background: #0000004a;
+  border-radius: 50%;
+  
+  &.active {
+    border-radius: 0%;
+    transform: scale(1);
+    pointer-events: all;
+    .modal {
+      opacity: 1;
+    }
+  }
+  
+  .modal {
+    transition: all linear 0.2s;
+    opacity: 0;
+    background: #fff;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    color: $dark;
+  }
+}
