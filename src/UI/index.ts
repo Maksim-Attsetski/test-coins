@@ -7,10 +7,12 @@ import Pagination from './Pagination';
 import Modal from './Modal';
 import InputModal from './InputModal';
 import Input from './Input';
+import AreaChart from './AreaChart';
 
 export type { ICeil };
 
 export {
+  AreaChart,
   Input,
   InputModal,
   Modal,

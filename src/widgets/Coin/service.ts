@@ -1,6 +1,6 @@
 import { AxiosInstance } from 'axios';
-import { IQuery, getCoinApi } from 'shared';
-import { ICoinApiRes } from './types';
+import { IQuery, getCoinApi, dateHelper } from 'shared';
+import { ICoinApiRes, ICoinHistory } from './types';
 
 class CoinService {
   api: AxiosInstance;
@@ -30,6 +30,23 @@ class CoinService {
       return res.data;
     } catch (error) {
       console.log('Fail to get coin', error);
+      throw error;
+    }
+  }
+  async getOneCoinHistory(id: string): Promise<ICoinHistory[]> {
+    try {
+      const res = await this.api.get(
+        // `assets/${id}/history?interval=m30`
+        `assets/${id}/history?interval=d1&start=${
+          dateHelper.dates.before1month
+        }&end=${Date.now()}`
+      );
+
+      console.log('Successfully get coin history', res);
+
+      return res.data.data;
+    } catch (error) {
+      console.log('Fail to get history', error);
       throw error;
     }
   }

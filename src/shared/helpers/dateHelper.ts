@@ -1,13 +1,16 @@
 type TGetTimeString = (date: Date | number, language?: string) => string;
 
 const oneDay = 8.64e7;
+const oneMonth = 2.628e9;
 
 class DateHelper {
   dates: {
     ago: number;
     now: number;
     before1d: number;
+    before1month: number;
     after1d: number;
+    after1month: number;
     after: number;
   };
 
@@ -15,10 +18,22 @@ class DateHelper {
     this.dates = {
       ago: -Infinity,
       before1d: Date.now() - oneDay,
+      before1month: Date.now() - oneMonth,
       now: Date.now(),
       after1d: Date.now() + oneDay,
+      after1month: Date.now() + oneMonth,
       after: Date.now() + 60000,
     };
+  }
+
+  getBeautifulDate(oldDate: number): string {
+    const date = new Date(oldDate);
+
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+
+    return `${day} ${month} ${year}`;
   }
 
   getTimeString: TGetTimeString = (

@@ -43,3 +43,8 @@ export interface ICoinApiRes {
   data: ICoin[];
   max?: number | undefined;
 }
+
+export interface ICoinHistory {
+  priceUsd: number;
+  time: number;
+}

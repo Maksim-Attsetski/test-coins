@@ -46,6 +46,12 @@ const useCoin = (query?: IQuery) => {
     action.deleteUserCoinsAC(id);
   }, []);
 
+  const onGetHistory = useCallback(async (id: string) => {
+    const response = await CoinService.getOneCoinHistory(id);
+
+    return response;
+  }, []);
+
   const onCalcChanges = async () => {
     if (!userCoins) return;
 
@@ -98,6 +104,7 @@ const useCoin = (query?: IQuery) => {
     onAddUserCoin,
     onEditUserCoin,
     onDeleteUserCoin,
+    onGetHistory,
     onCalcChanges,
   };
 };
