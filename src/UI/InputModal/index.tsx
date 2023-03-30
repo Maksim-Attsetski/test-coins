@@ -10,8 +10,10 @@ interface IProps {
   isVisible: boolean;
   setIsVisible: Dispatch<SetStateAction<boolean>>;
   title: string;
+  text?: string;
   onConfirm: (val: string) => void;
   error?: string;
+  setError?: Dispatch<SetStateAction<string>>;
   inputType?: string;
 }
 
@@ -19,11 +21,18 @@ const InputModal: FC<IProps> = ({
   isVisible,
   setIsVisible,
   title,
+  text = '',
   onConfirm,
   inputType = 'text',
   error = '',
+  setError = () => {},
 }) => {
   const [value, setValue] = useState('');
+
+  const onChange = (val: string) => {
+    setValue(val);
+    setError('');
+  };
 
   return (
     <div>
@@ -31,9 +40,15 @@ const InputModal: FC<IProps> = ({
         <>
           <h2>{title}</h2>
           <Gap y={10} />
-          <Input value={value} type={inputType} setValue={setValue} />
+          <div>{text}</div>
+          <Gap y={10} />
+          <Input
+            value={value}
+            errorText={error}
+            type={inputType}
+            setValue={onChange}
+          />
           <Gap y={5} />
-          {!!error.length && <div className={s.error}>{error}</div>}
           <Gap y={10} />
           <Button text='Confirm' onClick={() => onConfirm(value)} />
         </>

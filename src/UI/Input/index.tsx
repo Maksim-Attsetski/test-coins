@@ -17,7 +17,7 @@ interface IProps
     InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
   > {
-  setValue: Dispatch<SetStateAction<string>>;
+  setValue: Dispatch<SetStateAction<string>> | ((val: string) => void);
   errorText?: string;
 }
 

@@ -4,11 +4,11 @@ import { routeNames } from 'navigation/types';
 import { useNavigate } from 'react-router-dom';
 
 import { StringHelper } from 'shared';
-import { ICeil, InputModal, Table } from 'UI';
+import { ICeil, Table } from 'UI';
 import { useCoin, ICoin } from 'widgets/Coin';
 
-import s from './CoinTable.module.scss';
-import { useActions } from 'hooks';
+import AddCoinModal from '../AddCoinModal';
+import SellCoinModal from '../SellCoinModal';
 
 interface IProps {
   limit: number;
@@ -17,18 +17,10 @@ interface IProps {
 
 const CoinTable: FC<IProps> = ({ limit, offset }) => {
   const navigate = useNavigate();
-  const {
-    coins,
-    userCoins,
-    onAddUserCoin,
-    onDeleteUserCoin,
-    onEditUserCoin,
-    coinsBag,
-  } = useCoin({
+  const { coins, userCoins } = useCoin({
     limit,
     offset: offset * limit,
   });
-  const { action } = useActions();
 
   const [selectedCoin, setSelectedCoin] = useState<ICoin | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
@@ -65,67 +57,25 @@ const CoinTable: FC<IProps> = ({ limit, offset }) => {
     navigate(routeNames.Coin + ceil.id);
   };
 
-  const onBuyCoins = (coinCount: string) => {
-    if (!selectedCoin?.id) return;
-
-    try {
-      const priceForCount = selectedCoin.priceUsd * +coinCount;
-      if (priceForCount > coinsBag.balance) {
-        throw new Error(
-          'Не хватает ' + (priceForCount - coinsBag.balance) + '$ на балансе'
-        );
-      }
-
-      onAddUserCoin({ id: selectedCoin?.id, count: +coinCount });
-      action.setProfileAC({
-        ...coinsBag,
-        balance: coinsBag.balance - priceForCount,
-      });
-    } catch (error: any) {
-      alert(error?.message);
-    } finally {
-      setIsAddModalOpen(false);
-    }
-  };
-
-  const onSellCoins = (count: string) => {
-    if (!selectedCoin?.id) return;
-
-    const currentUserCoin = userCoins.find(
-      (coin) => coin.id === selectedCoin.id
-    );
-
-    if (!currentUserCoin) return;
-
-    if (currentUserCoin.count === +count) {
-      onDeleteUserCoin(selectedCoin?.id);
-    } else {
-      onEditUserCoin({
-        id: selectedCoin?.id,
-        count: currentUserCoin.count - +count,
-      });
-    }
-
-    action.setProfileAC({
-      ...coinsBag,
-      balance: coinsBag.balance + selectedCoin.priceUsd * +count,
-    });
+  const onCloseModal = () => {
     setIsDeleteModalOpen(false);
+    setIsAddModalOpen(false);
+    setSelectedCoin(null);
   };
 
   return (
     <div className='container'>
-      <InputModal
-        title='How much coins do you wanna buy?'
-        onConfirm={onBuyCoins}
+      <AddCoinModal
         isVisible={isAddModalOpen}
         setIsVisible={setIsAddModalOpen}
+        selectedCoin={selectedCoin}
+        onClose={onCloseModal}
       />
-      <InputModal
-        title='How much coins do you wanna sell?'
-        onConfirm={onSellCoins}
+      <SellCoinModal
         isVisible={isDeleteModalOpen}
         setIsVisible={setIsDeleteModalOpen}
+        selectedCoin={selectedCoin}
+        onClose={onCloseModal}
       />
       <Table rows={coinsRows} head={coinsHead} onCeilClick={onOpenCeil} />
     </div>
