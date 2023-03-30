@@ -1,5 +1,6 @@
 import { AxiosInstance } from 'axios';
 import { IQuery, getCoinApi } from 'shared';
+import { ICoinApiRes } from './types';
 
 class CoinService {
   api: AxiosInstance;
@@ -8,13 +9,13 @@ class CoinService {
     this.api = getCoinApi();
   }
 
-  async getCoins(params?: IQuery) {
+  async getCoins(params?: IQuery): Promise<ICoinApiRes> {
     try {
       const res = await this.api.get('assets', { params });
 
       console.log('Successfully get coins list', res);
 
-      return res.data;
+      return { data: res.data?.data, max: res.headers['content-length'] };
     } catch (error) {
       console.log('Fail to get coins list', error);
       throw error;

@@ -27,3 +27,8 @@ export const defaultLastProfile: ILastProfile = {
   lastUpdate: dateHelper.dates.after1d,
   coinCount: 0,
 };
+
+export interface ICoinApiRes {
+  data: ICoin[];
+  max?: number | undefined;
+}

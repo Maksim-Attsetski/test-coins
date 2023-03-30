@@ -15,6 +15,6 @@ const usePagination = (defaultLimit: number = 10) => {
     setLimit((prev) => (prev += defaultLimit));
   };
 
-  return { limit, offset, onNextPage, onPrevPage, onMoreContent };
+  return { limit, offset, onNextPage, onPrevPage, onMoreContent, setOffset };
 };
 export default usePagination;

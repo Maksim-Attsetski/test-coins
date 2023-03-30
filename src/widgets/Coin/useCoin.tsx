@@ -1,23 +1,31 @@
 import { useActions, useTypedSelector } from 'hooks';
 import { useCallback, useEffect } from 'react';
 import { dateHelper, IQuery } from 'shared';
-import { CoinService, defaultLastProfile, ICoin, ILastProfile } from '.';
+import {
+  CoinService,
+  defaultLastProfile,
+  ICoin,
+  ICoinApiRes,
+  ILastProfile,
+} from '.';
 
 const useCoin = (query?: IQuery) => {
-  const { coins, userCoins, lastProfile } = useTypedSelector(
+  const { coins, userCoins, lastProfile, maxCoinsLength } = useTypedSelector(
     (state) => state.coin
   );
   const { action } = useActions();
 
-  const onGetCoins = useCallback(async (query?: IQuery, isReturn?: boolean) => {
-    const data = await CoinService.getCoins(query);
+  const onGetCoins = useCallback(
+    async (query?: IQuery, isReturn?: boolean): Promise<ICoinApiRes> => {
+      const data = await CoinService.getCoins(query);
 
-    if (isReturn) {
-      return data?.data;
-    }
+      !isReturn && action.setCoinsAC(data.data);
+      data.max && action.setMaxCoinsLengthAC(data.max);
 
-    action.setCoinsAC(data?.data);
-  }, []);
+      return data;
+    },
+    []
+  );
 
   const onGetOneCoin = useCallback(async (id: string) => {
     const data = await CoinService.getOneCoin(id);
@@ -36,7 +44,7 @@ const useCoin = (query?: IQuery) => {
   const onCalcChanges = useCallback(async () => {
     if (!userCoins) return;
 
-    const data: ICoin[] = await onGetCoins({ ids: userCoins.join(',') }, true);
+    const data = await onGetCoins({ ids: userCoins.join(',') }, true);
 
     if (
       lastProfile.lastUpdate === 0 ||
@@ -48,7 +56,7 @@ const useCoin = (query?: IQuery) => {
         return defaultLastProfile;
       }
 
-      const currentChanges = data.reduce(
+      const currentChanges = data.data.reduce(
         (prev, cur: ICoin) =>
           ({
             price: (prev.price += +cur.vwap24Hr - +cur.priceUsd),
@@ -74,6 +82,7 @@ const useCoin = (query?: IQuery) => {
     coins,
     userCoins,
     lastProfile,
+    maxCoinsLength,
     onGetOneCoin,
     onGetCoins,
     onAddUserCoin,

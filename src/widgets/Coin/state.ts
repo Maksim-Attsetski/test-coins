@@ -6,12 +6,14 @@ interface IState {
   coins: ICoin[];
   userCoins: string[];
   lastProfile: ILastProfile;
+  maxCoinsLength: number;
 }
 
 const initialState: IState = {
   coins: [],
   userCoins: Storage.getItem(LSKeys.userCoins),
   lastProfile: Storage.getItem(LSKeys.profile) ?? defaultLastProfile,
+  maxCoinsLength: 10,
 };
 
 const setCoins = (state: IState, coins: string[]) => {
@@ -25,6 +27,9 @@ const coinSlice = createSlice({
   reducers: {
     setCoinsAC: (state: IState, action: PayloadAction<ICoin[]>) => {
       state.coins = action.payload;
+    },
+    setMaxCoinsLengthAC: (state: IState, action: PayloadAction<number>) => {
+      state.maxCoinsLength = action.payload;
     },
     setProfileAC: (state: IState, action: PayloadAction<ILastProfile>) => {
       state.lastProfile = action.payload;

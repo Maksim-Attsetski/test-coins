@@ -18,7 +18,7 @@ const CoinTable: FC<IProps> = ({ limit, offset }) => {
   const navigate = useNavigate();
   const { coins, userCoins, onAddUserCoin, onDeleteUserCoin } = useCoin({
     limit,
-    offset,
+    offset: offset * limit,
   });
 
   const coinsRows: ICeil[] = useMemo(() => {
