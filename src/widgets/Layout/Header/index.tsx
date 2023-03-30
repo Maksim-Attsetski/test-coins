@@ -22,8 +22,8 @@ const _Header: FC<IProps> = ({ setIsOpen, isOpen }) => {
 
   const changesText = useMemo(() => {
     const curPrice =
-      changes?.price < 10
-        ? changes?.price?.toFixed(6)
+      changes?.price < 10 && changes?.price > -9
+        ? changes?.price?.toFixed(6) + ' $'
         : StringHelper.getCurrency(changes.price);
 
     return `${curPrice} (${changes?.percent?.toFixed(3)}%)`;
