@@ -10,9 +10,11 @@ import React, {
 
 import { defaultLastProfile, ILastProfile, useCoin } from 'widgets/Coin';
 import { StringHelper } from 'shared';
+import { Button, Gap } from 'UI';
 
 import s from './Header.module.scss';
-import { Button, Gap } from 'UI';
+import { routeNames } from 'navigation/types';
+import { useNavigate } from 'react-router-dom';
 
 interface IProps {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -20,11 +22,18 @@ interface IProps {
 }
 const _Header: FC<IProps> = ({ setIsOpen, isOpen }) => {
   const { coins, userCoins, onCalcChanges, coinsBag } = useCoin();
+  const navigate = useNavigate();
   const [changes, setChanges] = useState<ILastProfile>(defaultLastProfile);
 
   const onGetChanges = async () => {
-    const allChanges = await onCalcChanges();
-    allChanges && setChanges(allChanges);
+    const { changes } = await onCalcChanges();
+
+    changes && setChanges(changes);
+  };
+
+  const onGoToProfile = () => {
+    navigate(routeNames.CoinsBag);
+    setIsOpen(false);
   };
 
   const mostPopularCoins = useMemo(() => {
@@ -47,9 +56,8 @@ const _Header: FC<IProps> = ({ setIsOpen, isOpen }) => {
         : StringHelper.getCurrency(changes.changeInUSD);
 
     return (
-      <div>
-        {StringHelper.getCurrency(coinsBag.balance)}, {curPrice}{' '}
-        {changes?.changeInPercent?.toFixed(3)}%
+      <div onClick={onGoToProfile}>
+        {curPrice} {changes?.changeInPercent?.toFixed(3)}%
       </div>
     );
   }, [coinsBag]);

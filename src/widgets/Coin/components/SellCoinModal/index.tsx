@@ -25,7 +25,7 @@ const SellCoinModal: FC<IProps> = ({ selectedCoin, onClose, ...props }) => {
 
   const currentUserCoin = useMemo(
     () =>
-      selectedCoin ? userCoins.find((el) => el.id === selectedCoin.id) : null,
+      selectedCoin ? userCoins?.find((el) => el.id === selectedCoin.id) : null,
     [selectedCoin, userCoins]
   );
 

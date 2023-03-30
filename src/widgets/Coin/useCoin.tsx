@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { useActions, useTypedSelector } from 'hooks';
 import { dateHelper, IQuery, TIntervalsText } from 'shared';
-import { CoinService, ICoinApiRes, IUserCoin } from '.';
+import { CoinService, ICoin, ICoinApiRes, IUserCoin } from '.';
 
 const useCoin = (query?: IQuery) => {
   const { coins, userCoins, coinsBag, maxCoinsLength } = useTypedSelector(
@@ -60,8 +60,8 @@ const useCoin = (query?: IQuery) => {
     return response;
   }, []);
 
-  const onCalcChanges = async () => {
-    if (!userCoins) return;
+  const onCalcChanges = async (): Promise<{ data: ICoin[]; changes: any }> => {
+    if (!userCoins) return { data: [], changes: null };
 
     const data = await onGetCoins(
       { ids: userCoins.map((el) => el.id).join(',') },
@@ -71,7 +71,7 @@ const useCoin = (query?: IQuery) => {
 
     if (userCoins.length === 0) {
       action.setProfileAC(currentChanges);
-      return currentChanges;
+      return { data: data.data, changes: currentChanges };
     }
 
     const coinsBagCost = data.data.reduce((prev, cur) => {
@@ -95,7 +95,7 @@ const useCoin = (query?: IQuery) => {
     }
 
     action.setProfileAC(currentChanges);
-    return currentChanges;
+    return { data: data.data, changes: currentChanges };
   };
 
   useEffect(() => {
