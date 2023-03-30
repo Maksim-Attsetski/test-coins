@@ -1,5 +1,7 @@
-import React, { Dispatch, FC, SetStateAction, useState } from 'react';
+import React, { Dispatch, FC, memo, SetStateAction, useState } from 'react';
 import Button from 'UI/Button';
+import Gap from 'UI/Gap';
+import Input from 'UI/Input';
 import Modal from 'UI/Modal';
 
 import s from './InputModal.module.scss';
@@ -10,6 +12,7 @@ interface IProps {
   title: string;
   onConfirm: (val: string) => void;
   error?: string;
+  inputType?: string;
 }
 
 const InputModal: FC<IProps> = ({
@@ -17,6 +20,7 @@ const InputModal: FC<IProps> = ({
   setIsVisible,
   title,
   onConfirm,
+  inputType = 'text',
   error = '',
 }) => {
   const [value, setValue] = useState('');
@@ -26,16 +30,15 @@ const InputModal: FC<IProps> = ({
       <Modal isVisible={isVisible} setIsVisible={setIsVisible}>
         <>
           <h2>{title}</h2>
-          <input
-            type='text'
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-          />
+          <Gap y={10} />
+          <Input value={value} type={inputType} setValue={setValue} />
+          <Gap y={5} />
           {!!error.length && <div className={s.error}>{error}</div>}
+          <Gap y={10} />
           <Button text='Confirm' onClick={() => onConfirm(value)} />
         </>
       </Modal>
     </div>
   );
 };
-export default InputModal;
+export default memo(InputModal);

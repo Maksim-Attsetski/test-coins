@@ -1,12 +1,16 @@
 @import 'shared/all.scss';
 
 header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   height: $headerHeight;
 }
 
 main {
   $top: 20px;
 
-  margin-top: $top;
+  margin-top: calc($headerHeight + $top);
   min-height: calc($contentHeight - $top);  
 }

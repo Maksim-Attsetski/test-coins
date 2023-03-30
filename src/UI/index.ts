@@ -6,7 +6,18 @@ import Button from './Button';
 import Pagination from './Pagination';
 import Modal from './Modal';
 import InputModal from './InputModal';
+import Input from './Input';
 
 export type { ICeil };
 
-export { InputModal, Modal, Pagination, Table, Loader, Gap, List, Button };
+export {
+  Input,
+  InputModal,
+  Modal,
+  Pagination,
+  Table,
+  Loader,
+  Gap,
+  List,
+  Button,
+};
