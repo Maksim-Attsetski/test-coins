@@ -10,17 +10,9 @@ import { useCoin, ICoin, IUserCoin } from 'widgets/Coin';
 import AddCoinModal from '../AddCoinModal';
 import SellCoinModal from '../SellCoinModal';
 
-interface IProps {
-  limit: number;
-  offset: number;
-}
-
-const CoinTable: FC<IProps> = ({ limit, offset }) => {
+const CoinTable: FC = () => {
   const navigate = useNavigate();
-  const { coins, userCoins } = useCoin({
-    limit,
-    offset: offset * limit,
-  });
+  const { coins, userCoins } = useCoin();
 
   const [selectedCoin, setSelectedCoin] = useState<ICoin | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);

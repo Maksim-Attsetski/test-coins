@@ -1,9 +1,21 @@
+@import 'shared/all.scss';
+
 .loader {
-  @apply z-[10001] absolute top-1/3 left-1/2 text-4xl;
+  position: absolute;
+  top: 33%;
+  left: 50%;
+  font-size: xx-large;
+  z-index: 1001;
   transform: translate(-50%, -50%);
 }
 .shadow {
-  @apply absolute top-0 left-0 w-full h-full z-[10000] bg-slate-100;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  background: #121111ce;
 }
 
 $background: #62ABFF;

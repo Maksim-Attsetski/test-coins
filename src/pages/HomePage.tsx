@@ -1,16 +1,20 @@
 import React, { FC, memo, useState } from 'react';
 
 import { usePagination } from 'hooks';
-import { Button, Gap, Modal, Pagination } from 'UI';
+import { Button, Gap, Loader, Modal, Pagination } from 'UI';
 import { CoinTable, useCoin } from 'widgets/Coin';
 
 const HomePage: FC = () => {
   const { limit, offset, onMoreContent, setOffset } = usePagination();
-  const { maxCoinsLength } = useCoin();
+  const { maxCoinsLength, isLoading } = useCoin({
+    limit,
+    offset: offset * limit,
+  });
 
   return (
     <div className='container'>
-      <CoinTable limit={limit} offset={offset} />
+      {isLoading && <Loader text='Be Happy :)' />}
+      <CoinTable />
       <Gap y={10} />
       <Button onClick={onMoreContent} text='More' />
       <Pagination

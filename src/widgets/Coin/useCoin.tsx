@@ -1,29 +1,31 @@
+import { useCallback, useEffect, useState } from 'react';
+
 import { useActions, useTypedSelector } from 'hooks';
-import { useCallback, useEffect } from 'react';
 import { dateHelper, IQuery, TIntervalsText } from 'shared';
-import {
-  CoinService,
-  defaultLastProfile,
-  ICoin,
-  ICoinApiRes,
-  ILastProfile,
-  IUserCoin,
-} from '.';
+import { CoinService, ICoinApiRes, IUserCoin } from '.';
 
 const useCoin = (query?: IQuery) => {
   const { coins, userCoins, coinsBag, maxCoinsLength } = useTypedSelector(
     (state) => state.coin
   );
   const { action } = useActions();
+  const [isLoading, setIsLoading] = useState(!!query);
 
   const onGetCoins = useCallback(
     async (query?: IQuery, isReturn?: boolean): Promise<ICoinApiRes> => {
-      const data = await CoinService.getCoins(query);
+      try {
+        setIsLoading(true);
+        const data = await CoinService.getCoins(query);
 
-      !isReturn && action.setCoinsAC(data.data);
-      data.max && action.setMaxCoinsLengthAC(data.max);
+        !isReturn && action.setCoinsAC(data.data);
+        data.max && action.setMaxCoinsLengthAC(data.max);
 
-      return data;
+        return data;
+      } catch (error) {
+        throw error;
+      } finally {
+        setIsLoading(false);
+      }
     },
     []
   );
@@ -105,6 +107,7 @@ const useCoin = (query?: IQuery) => {
     userCoins,
     coinsBag,
     maxCoinsLength,
+    isLoading,
     onGetOneCoin,
     onGetCoins,
     onAddUserCoin,

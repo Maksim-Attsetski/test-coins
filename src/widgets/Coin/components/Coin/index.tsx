@@ -1,7 +1,7 @@
 import React, { FC, memo, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { dateHelper, StringHelper, TIntervalsText } from 'shared';
-import { AreaChart, Button, Gap } from 'UI';
+import { AreaChart, Button, Gap, Loader } from 'UI';
 import { ICoin, ICoinHistory, useCoin } from 'widgets/Coin';
 
 import s from './Coin.module.scss';
@@ -10,6 +10,8 @@ const Coin: FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { onGetOneCoin, onGetHistory } = useCoin();
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [coin, setCoin] = useState<null | ICoin>(null);
   const [history, setHistory] = useState<ICoinHistory[]>([]);
   const [sortBy, setSortBy] = useState<TIntervalsText>('month');
@@ -17,10 +19,18 @@ const Coin: FC = () => {
   const onGetCoin = async () => {
     if (!id) return;
 
-    const data = await onGetOneCoin(id);
-    const response = await onGetHistory(id, sortBy);
-    setHistory(response);
-    setCoin(data);
+    try {
+      setIsLoading(true);
+
+      const data = await onGetOneCoin(id);
+      const response = await onGetHistory(id, sortBy);
+      setHistory(response);
+      setCoin(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const dataForChart = useMemo(() => {
@@ -40,6 +50,7 @@ const Coin: FC = () => {
 
   return id && coin ? (
     <div>
+      {isLoading && <Loader text='Coin is loading...' />}
       <div className={s.btnContainer}>
         <Button text='Go back' onClick={() => navigate(-1)} />
         <Button
@@ -64,6 +75,8 @@ const Coin: FC = () => {
   ) : (
     <div>
       <div>Coin was not found</div>
+      <Gap y={15} />
+      <Button text='Go back' onClick={() => navigate(-1)} />
     </div>
   );
 };
