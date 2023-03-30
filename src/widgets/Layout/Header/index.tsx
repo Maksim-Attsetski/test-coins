@@ -10,7 +10,7 @@ interface IProps {
   isOpen: boolean;
 }
 const _Header: FC<IProps> = ({ setIsOpen, isOpen }) => {
-  const { coins, userCoins, onCalcChanges, lastProfile } = useCoin();
+  const { coins, userCoins, onCalcChanges, coinsBag } = useCoin();
   const [changes, setChanges] = useState<ILastProfile>(defaultLastProfile);
 
   const onGetChanges = async () => {
@@ -22,16 +22,16 @@ const _Header: FC<IProps> = ({ setIsOpen, isOpen }) => {
 
   const changesText = useMemo(() => {
     const curPrice =
-      changes?.price < 10 && changes?.price > -9
-        ? changes?.price?.toFixed(6) + ' $'
-        : StringHelper.getCurrency(changes.price);
+      changes?.changeInUSD < 10 && changes?.changeInUSD > -9
+        ? changes?.changeInUSD?.toFixed(6) + ' $'
+        : StringHelper.getCurrency(changes.changeInUSD);
 
-    return `${curPrice} (${changes?.percent?.toFixed(3)}%)`;
+    return `${curPrice} (${changes?.changeInPercent?.toFixed(3)}%)`;
   }, [changes]);
 
   useEffect(() => {
     onGetChanges();
-  }, [userCoins, lastProfile]);
+  }, [userCoins]);
 
   return (
     <header className={s.header}>
@@ -45,7 +45,9 @@ const _Header: FC<IProps> = ({ setIsOpen, isOpen }) => {
           ))}
         </div>
         <div>
-          <div>{changesText}</div>
+          <div>
+            {StringHelper.getCurrency(coinsBag.balance)}, {changesText}
+          </div>
         </div>
       </div>
     </header>

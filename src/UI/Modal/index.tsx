@@ -40,7 +40,7 @@ const Modal: FC<IProps> = ({
   };
 
   useEffect(() => {
-    isVisible ? onModalOpen() : onClose();
+    isVisible ? onModalOpen() : onModalClose();
   }, [isVisible]);
 
   return (

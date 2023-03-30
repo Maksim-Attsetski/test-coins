@@ -14,18 +14,29 @@ export interface ICoin {
   vwap24Hr: number;
 }
 
+export interface IUserCoin {
+  id: string;
+  count: number;
+}
+
 export interface ILastProfile {
-  price: number;
-  percent: number;
+  balance: number;
+  balanceInCoins: number;
+  changeInUSD: number;
+  changeInPercent: number;
   coinCount: number;
   lastUpdate: number;
+  balance1dbefore: number;
 }
 
 export const defaultLastProfile: ILastProfile = {
-  percent: 0,
-  price: 0,
-  lastUpdate: dateHelper.dates.after1d,
+  balance: 100,
+  balanceInCoins: 0,
+  changeInUSD: 0,
+  changeInPercent: 0,
   coinCount: 0,
+  lastUpdate: dateHelper.dates.after1d,
+  balance1dbefore: 100,
 };
 
 export interface ICoinApiRes {

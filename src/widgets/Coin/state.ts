@@ -1,22 +1,22 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { LSKeys, Storage } from 'shared';
-import { defaultLastProfile, ICoin, ILastProfile } from './types';
+import { defaultLastProfile, ICoin, ILastProfile, IUserCoin } from './types';
 
 interface IState {
   coins: ICoin[];
-  userCoins: string[];
-  lastProfile: ILastProfile;
+  userCoins: IUserCoin[];
+  coinsBag: ILastProfile;
   maxCoinsLength: number;
 }
 
 const initialState: IState = {
   coins: [],
   userCoins: Storage.getItem(LSKeys.userCoins),
-  lastProfile: Storage.getItem(LSKeys.profile) ?? defaultLastProfile,
+  coinsBag: Storage.getItem(LSKeys.profile) ?? defaultLastProfile,
   maxCoinsLength: 10,
 };
 
-const setCoins = (state: IState, coins: string[]) => {
+const setCoins = (state: IState, coins: IUserCoin[]) => {
   state.userCoins = coins;
   Storage.setItem(LSKeys.userCoins, coins);
 };
@@ -32,13 +32,13 @@ const coinSlice = createSlice({
       state.maxCoinsLength = action.payload;
     },
     setProfileAC: (state: IState, action: PayloadAction<ILastProfile>) => {
-      state.lastProfile = action.payload;
+      state.coinsBag = action.payload;
       Storage.setItem(LSKeys.profile, action.payload);
     },
-    setUserCoinsAC: (state: IState, action: PayloadAction<string[]>) => {
+    setUserCoinsAC: (state: IState, action: PayloadAction<IUserCoin[]>) => {
       setCoins(state, action.payload);
     },
-    addUserCoinsAC: (state: IState, action: PayloadAction<string>) => {
+    addUserCoinsAC: (state: IState, action: PayloadAction<IUserCoin>) => {
       setCoins(
         state,
         state.userCoins
@@ -46,11 +46,19 @@ const coinSlice = createSlice({
           : [action.payload]
       );
     },
+    editUserCoinsAC: (state: IState, action: PayloadAction<IUserCoin>) => {
+      setCoins(
+        state,
+        state.userCoins.map((coin) =>
+          coin.id === action.payload.id ? action.payload : coin
+        )
+      );
+    },
     deleteUserCoinsAC: (state: IState, action: PayloadAction<string>) => {
       setCoins(
         state,
         state.userCoins
-          ? state.userCoins.filter((el) => el !== action.payload)
+          ? state.userCoins.filter((el) => el.id !== action.payload)
           : []
       );
     },

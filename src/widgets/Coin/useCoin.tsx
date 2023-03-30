@@ -7,10 +7,11 @@ import {
   ICoin,
   ICoinApiRes,
   ILastProfile,
+  IUserCoin,
 } from '.';
 
 const useCoin = (query?: IQuery) => {
-  const { coins, userCoins, lastProfile, maxCoinsLength } = useTypedSelector(
+  const { coins, userCoins, coinsBag, maxCoinsLength } = useTypedSelector(
     (state) => state.coin
   );
   const { action } = useActions();
@@ -33,46 +34,55 @@ const useCoin = (query?: IQuery) => {
     return data?.data;
   }, []);
 
-  const onAddUserCoin = useCallback((id: string) => {
-    action.addUserCoinsAC(id);
+  const onAddUserCoin = useCallback((data: IUserCoin) => {
+    action.addUserCoinsAC(data);
+  }, []);
+
+  const onEditUserCoin = useCallback((data: IUserCoin) => {
+    action.editUserCoinsAC(data);
   }, []);
 
   const onDeleteUserCoin = useCallback((id: string) => {
     action.deleteUserCoinsAC(id);
   }, []);
 
-  const onCalcChanges = useCallback(async () => {
+  const onCalcChanges = async () => {
     if (!userCoins) return;
 
-    const data = await onGetCoins({ ids: userCoins.join(',') }, true);
+    const data = await onGetCoins(
+      { ids: userCoins.map((el) => el.id).join(',') },
+      true
+    );
+    const currentChanges = { ...coinsBag };
 
-    if (
-      lastProfile.lastUpdate === 0 ||
-      lastProfile.lastUpdate < Date.now() ||
-      lastProfile.coinCount !== userCoins.length
-    ) {
-      if (userCoins.length === 0) {
-        action.setProfileAC(defaultLastProfile);
-        return defaultLastProfile;
-      }
-
-      const currentChanges = data.data.reduce(
-        (prev, cur: ICoin) =>
-          ({
-            price: (prev.price += +cur.vwap24Hr - +cur.priceUsd),
-            percent: (prev.percent += +cur.changePercent24Hr),
-            lastUpdate: dateHelper.dates.after1d,
-            coinCount: userCoins.length,
-          } as ILastProfile),
-        { coinCount: 0, lastUpdate: 0, percent: 0, price: 0 }
-      );
-
+    if (userCoins.length === 0) {
       action.setProfileAC(currentChanges);
       return currentChanges;
-    } else {
-      return lastProfile;
     }
-  }, [userCoins, lastProfile]);
+
+    const coinsBagCost = data.data.reduce((prev, cur) => {
+      const curCoin = userCoins.find((el) => el.id === cur.id);
+      return curCoin ? (prev += cur.priceUsd * curCoin.count) : prev;
+    }, 0);
+
+    const changeInUSD =
+      coinsBagCost + coinsBag.balance - coinsBag.balance1dbefore;
+    const changeInPercent =
+      changeInUSD >= 1 ? changeInUSD / 100 : changeInUSD / -100;
+
+    currentChanges.changeInPercent = changeInPercent;
+    currentChanges.balanceInCoins = coinsBagCost;
+    currentChanges.changeInUSD = changeInUSD;
+    currentChanges.coinCount = userCoins.length;
+
+    if (coinsBag.lastUpdate < Date.now()) {
+      currentChanges.balance1dbefore = coinsBagCost + coinsBag.balance;
+      currentChanges.lastUpdate = Date.now();
+    }
+
+    action.setProfileAC(currentChanges);
+    return currentChanges;
+  };
 
   useEffect(() => {
     query && onGetCoins(query);
@@ -81,11 +91,12 @@ const useCoin = (query?: IQuery) => {
   return {
     coins,
     userCoins,
-    lastProfile,
+    coinsBag,
     maxCoinsLength,
     onGetOneCoin,
     onGetCoins,
     onAddUserCoin,
+    onEditUserCoin,
     onDeleteUserCoin,
     onCalcChanges,
   };
