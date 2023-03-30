@@ -29,34 +29,36 @@ const Table: FC<IProps> = ({
   };
 
   return (
-    <table className={s.table}>
-      <tbody>
-        <tr className={s.table__head}>
-          {head.map((el) => (
-            <th key={el} className={s.table__ceil}>
-              {el}
-            </th>
-          ))}
-        </tr>
-        {rows.map((row, i) => (
-          <tr
-            key={i}
-            onClick={() => onCeilClick(row)}
-            className={s.tableContainer}
-          >
-            {row.data.map((el, inx) => (
-              <td
-                onClick={(e) => onCurCeilClick(e, el, row)}
-                className={s.table__ceil}
-                key={inx}
-              >
-                {el.text}
-              </td>
+    <div className={s.container}>
+      <table className={s.table}>
+        <tbody>
+          <tr className={s.table__head}>
+            {head.map((el) => (
+              <th key={el} className={s.table__ceil}>
+                {el}
+              </th>
             ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
+          {rows.map((row, i) => (
+            <tr
+              key={i}
+              onClick={() => onCeilClick(row)}
+              className={s.tableContainer}
+            >
+              {row.data.map((el, inx) => (
+                <td
+                  onClick={(e) => onCurCeilClick(e, el, row)}
+                  className={s.table__ceil}
+                  key={inx}
+                >
+                  {el.text}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };
 export default memo(Table);

@@ -1,14 +1,14 @@
 @import 'shared/all.scss';
 $border: 0.5px solid $white;
 
+.container {
+  overflow-x: auto;
+}
+
 .table {
-  width: max-content;
   border-spacing: 0;
   border: $border;
-  
-  &__head {}
-  &Container {}
-  
+
   &__head,
   &__ceil {
     border: $border;

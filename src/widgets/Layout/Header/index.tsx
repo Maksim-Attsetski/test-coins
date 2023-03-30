@@ -1,12 +1,21 @@
-import React, { FC, memo, useEffect, useMemo, useState } from 'react';
+import React, {
+  FC,
+  Dispatch,
+  memo,
+  useEffect,
+  useMemo,
+  useState,
+  SetStateAction,
+} from 'react';
 
 import { defaultLastProfile, ILastProfile, useCoin } from 'widgets/Coin';
 import { StringHelper } from 'shared';
 
 import s from './Header.module.scss';
+import { Button, Gap } from 'UI';
 
 interface IProps {
-  setIsOpen: (val: boolean) => void;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
   isOpen: boolean;
 }
 const _Header: FC<IProps> = ({ setIsOpen, isOpen }) => {
@@ -18,39 +27,65 @@ const _Header: FC<IProps> = ({ setIsOpen, isOpen }) => {
     allChanges && setChanges(allChanges);
   };
 
-  const mostPopularCoins = useMemo(() => coins.slice(0, 3), [coins]);
+  const mostPopularCoins = useMemo(() => {
+    return (
+      <div className={s.coins}>
+        {coins.slice(0, 3).map((coin) => (
+          <div key={coin.id}>
+            <div>{coin.name}</div>
+            <div>{StringHelper.getCurrency(coin.priceUsd)}</div>
+          </div>
+        ))}
+      </div>
+    );
+  }, [coins]);
 
-  const changesText = useMemo(() => {
+  const myChanges = useMemo(() => {
     const curPrice =
       changes?.changeInUSD < 10 && changes?.changeInUSD > -9
         ? changes?.changeInUSD?.toFixed(6) + ' $'
         : StringHelper.getCurrency(changes.changeInUSD);
 
-    return `${curPrice} (${changes?.changeInPercent?.toFixed(3)}%)`;
-  }, [changes]);
+    return (
+      <div>
+        {StringHelper.getCurrency(coinsBag.balance)}, {curPrice}{' '}
+        {changes?.changeInPercent?.toFixed(3)}%
+      </div>
+    );
+  }, [coinsBag]);
 
   useEffect(() => {
     onGetChanges();
   }, [userCoins]);
 
   return (
-    <header className={s.header}>
-      <div className={'container ' + s.headerBody}>
-        <div className={s.coins}>
-          {mostPopularCoins.map((coin) => (
-            <div key={coin.id}>
-              <div>{coin.name}</div>
-              <div>{StringHelper.getCurrency(coin.priceUsd)}</div>
-            </div>
-          ))}
+    <div>
+      <header className={s.header}>
+        <div className={'container ' + s.headerBody}>
+          <div>{mostPopularCoins}</div>
+          <div>{myChanges}</div>
         </div>
-        <div>
-          <div>
-            {StringHelper.getCurrency(coinsBag.balance)}, {changesText}
+        <div className={'container ' + s.headerSider}>
+          <div className={s.burger} onClick={() => setIsOpen((prev) => !prev)}>
+            {isOpen ? '➖' : '➕'}
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+      <aside className={[s.aside, isOpen && s.active].join(' ')}>
+        <Button
+          text='❌'
+          onClick={() => setIsOpen(false)}
+          className={s.close}
+        />
+        <h3>The most popular coins</h3>
+        <Gap y={5} />
+        <div>{mostPopularCoins}</div>
+        <Gap y={15} />
+        <h3>My coins bag changes</h3>
+        <Gap y={5} />
+        <div>{myChanges}</div>
+      </aside>
+    </div>
   );
 };
 
