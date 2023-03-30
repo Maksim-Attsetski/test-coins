@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { dateHelper, StringHelper, TIntervalsText } from 'shared';
 import { AreaChart, Button, Gap, Loader } from 'UI';
 import { ICoin, ICoinHistory, useCoin } from 'widgets/Coin';
+import AddCoinModal from '../AddCoinModal';
+import SellCoinModal from '../SellCoinModal';
 
 import s from './Coin.module.scss';
 
@@ -12,6 +14,9 @@ const Coin: FC = () => {
   const { onGetOneCoin, onGetHistory } = useCoin();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+
   const [coin, setCoin] = useState<null | ICoin>(null);
   const [history, setHistory] = useState<ICoinHistory[]>([]);
   const [sortBy, setSortBy] = useState<TIntervalsText>('month');
@@ -24,6 +29,7 @@ const Coin: FC = () => {
 
       const data = await onGetOneCoin(id);
       const response = await onGetHistory(id, sortBy);
+
       setHistory(response);
       setCoin(data);
     } catch (error) {
@@ -44,15 +50,35 @@ const Coin: FC = () => {
     };
   }, [history]);
 
+  const onCloseModal = () => {
+    setIsDeleteModalOpen(false);
+    setIsAddModalOpen(false);
+  };
+
   useEffect(() => {
     onGetCoin();
   }, [id, sortBy]);
 
   return id && coin ? (
     <div>
+      <AddCoinModal
+        isVisible={isAddModalOpen}
+        setIsVisible={setIsAddModalOpen}
+        selectedCoin={coin}
+        onClose={onCloseModal}
+      />
+      <SellCoinModal
+        isVisible={isDeleteModalOpen}
+        setIsVisible={setIsDeleteModalOpen}
+        selectedCoin={coin}
+        onClose={onCloseModal}
+      />
+
       {isLoading && <Loader text='Coin is loading...' />}
       <div className={s.btnContainer}>
         <Button text='Go back' onClick={() => navigate(-1)} />
+        <Button text='Buy' onClick={() => setIsAddModalOpen(true)} />
+        <Button text='Sell' onClick={() => setIsDeleteModalOpen(true)} />
         <Button
           text={'Sort by ' + sortBy}
           onClick={() =>

@@ -50,10 +50,10 @@ const SellCoinModal: FC<IProps> = ({ selectedCoin, onClose, ...props }) => {
         ...coinsBag,
         balance: coinsBag.balance + selectedCoin.priceUsd * +count,
       });
+
+      onClose();
     } catch (error: any) {
       setError(error?.message);
-    } finally {
-      onClose();
     }
   };
 
